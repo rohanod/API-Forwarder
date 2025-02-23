@@ -6,8 +6,7 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
         const headers = searchParams.get('headers')
         const targetPath = (await params).path.join('/')
         
-        const forwardHeaders = new Headers(request.headers)
-        forwardHeaders.delete('accept-encoding')
+        const forwardHeaders = new Headers()
         
         if (headers) {
             try {
@@ -32,26 +31,34 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
             'Access-Control-Allow-Headers': '*',
-            'Content-Type': contentType || 'application/json'
+            'Content-Type': 'application/json'
         }
 
         if (contentType?.includes('application/json')) {
             const data = await response.json()
-            return NextResponse.json(data, {
+            return new Response(JSON.stringify(data), {
                 status: response.status,
                 headers: corsHeaders
             })
         } else {
             const text = await response.text()
-            return new NextResponse(text, {
-                status: response.status,
-                headers: corsHeaders
-            })
+            try {
+                const jsonData = JSON.parse(text)
+                return new Response(JSON.stringify(jsonData), {
+                    status: response.status,
+                    headers: corsHeaders
+                })
+            } catch {
+                return new Response(JSON.stringify({ text }), {
+                    status: response.status,
+                    headers: corsHeaders
+                })
+            }
         }
     } catch (error: any) {
         console.error('Error:', error)
-        return NextResponse.json(
-            { error: 'Failed to forward request', details: error?.message || 'Unknown error' },
+        return new Response(
+            JSON.stringify({ error: 'Failed to forward request', details: error?.message || 'Unknown error' }),
             { 
                 status: 500,
                 headers: {
