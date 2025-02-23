@@ -7,6 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
         const targetPath = (await params).path.join('/')
         
         const forwardHeaders = new Headers(request.headers)
+        forwardHeaders.delete('accept-encoding')
         
         if (headers) {
             try {
@@ -30,26 +31,21 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
         const corsHeaders = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': '*'
+            'Access-Control-Allow-Headers': '*',
+            'Content-Type': contentType || 'application/json'
         }
 
         if (contentType?.includes('application/json')) {
             const data = await response.json()
             return NextResponse.json(data, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType,
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         } else {
             const text = await response.text()
             return new NextResponse(text, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType || 'text/plain',
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         }
     } catch (error: any) {
@@ -61,7 +57,8 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                    'Access-Control-Allow-Headers': '*'
+                    'Access-Control-Allow-Headers': '*',
+                    'Content-Type': 'application/json'
                 }
             }
         )
@@ -86,6 +83,7 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
         const targetPath = (await params).path.join('/')
         
         const forwardHeaders = new Headers(request.headers)
+        forwardHeaders.delete('accept-encoding')
         
         if (headers) {
             try {
@@ -113,26 +111,21 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
         const corsHeaders = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': '*'
+            'Access-Control-Allow-Headers': '*',
+            'Content-Type': contentType || 'application/json'
         }
 
         if (contentType?.includes('application/json')) {
             const data = await response.json()
             return NextResponse.json(data, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType,
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         } else {
             const text = await response.text()
             return new NextResponse(text, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType || 'text/plain',
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         }
     } catch (error: any) {
@@ -144,7 +137,8 @@ export async function POST(request: NextRequest, { params }: { params: { path: s
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                    'Access-Control-Allow-Headers': '*'
+                    'Access-Control-Allow-Headers': '*',
+                    'Content-Type': 'application/json'
                 }
             }
         )
@@ -158,6 +152,7 @@ export async function PUT(request: NextRequest, { params }: { params: { path: st
         const targetPath = (await params).path.join('/')
         
         const forwardHeaders = new Headers(request.headers)
+        forwardHeaders.delete('accept-encoding')
         
         if (headers) {
             try {
@@ -185,26 +180,21 @@ export async function PUT(request: NextRequest, { params }: { params: { path: st
         const corsHeaders = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': '*'
+            'Access-Control-Allow-Headers': '*',
+            'Content-Type': contentType || 'application/json'
         }
 
         if (contentType?.includes('application/json')) {
             const data = await response.json()
             return NextResponse.json(data, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType,
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         } else {
             const text = await response.text()
             return new NextResponse(text, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType || 'text/plain',
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         }
     } catch (error: any) {
@@ -216,7 +206,8 @@ export async function PUT(request: NextRequest, { params }: { params: { path: st
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                    'Access-Control-Allow-Headers': '*'
+                    'Access-Control-Allow-Headers': '*',
+                    'Content-Type': 'application/json'
                 }
             }
         )
@@ -230,6 +221,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { path:
         const targetPath = (await params).path.join('/')
         
         const forwardHeaders = new Headers(request.headers)
+        forwardHeaders.delete('accept-encoding')
         
         if (headers) {
             try {
@@ -254,26 +246,21 @@ export async function DELETE(request: NextRequest, { params }: { params: { path:
         const corsHeaders = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': '*'
+            'Access-Control-Allow-Headers': '*',
+            'Content-Type': contentType || 'application/json'
         }
 
         if (contentType?.includes('application/json')) {
             const data = await response.json()
             return NextResponse.json(data, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType,
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         } else {
             const text = await response.text()
             return new NextResponse(text, {
                 status: response.status,
-                headers: {
-                    'Content-Type': contentType || 'text/plain',
-                    ...corsHeaders
-                }
+                headers: corsHeaders
             })
         }
     } catch (error: any) {
@@ -285,7 +272,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { path:
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-                    'Access-Control-Allow-Headers': '*'
+                    'Access-Control-Allow-Headers': '*',
+                    'Content-Type': 'application/json'
                 }
             }
         )
