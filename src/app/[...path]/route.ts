@@ -7,6 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
         const targetPath = (await params).path.join('/')
         
         const forwardHeaders = new Headers()
+        forwardHeaders.set('Accept', 'application/json')
         
         if (headers) {
             try {
@@ -31,41 +32,46 @@ export async function GET(request: NextRequest, { params }: { params: { path: st
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
             'Access-Control-Allow-Headers': '*',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json; charset=utf-8'
         }
 
-        if (contentType?.includes('application/json')) {
-            const data = await response.json()
+        let data
+        try {
+            if (contentType?.includes('application/json')) {
+                data = await response.json()
+            } else {
+                const text = await response.text()
+                try {
+                    data = JSON.parse(text)
+                } catch {
+                    data = { text }
+                }
+            }
+
+            // Ensure data is a plain object
+            data = JSON.parse(JSON.stringify(data))
+            
             return new Response(JSON.stringify(data), {
-                status: response.status,
+                status: 200,
                 headers: corsHeaders
             })
-        } else {
-            const text = await response.text()
-            try {
-                const jsonData = JSON.parse(text)
-                return new Response(JSON.stringify(jsonData), {
-                    status: response.status,
-                    headers: corsHeaders
-                })
-            } catch {
-                return new Response(JSON.stringify({ text }), {
-                    status: response.status,
-                    headers: corsHeaders
-                })
-            }
+        } catch (e) {
+            return new Response(JSON.stringify({ error: 'Invalid JSON response' }), {
+                status: 200,
+                headers: corsHeaders
+            })
         }
     } catch (error: any) {
         console.error('Error:', error)
         return new Response(
             JSON.stringify({ error: 'Failed to forward request', details: error?.message || 'Unknown error' }),
             { 
-                status: 500,
+                status: 200,
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                     'Access-Control-Allow-Headers': '*',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json; charset=utf-8'
                 }
             }
         )
